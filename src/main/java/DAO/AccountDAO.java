@@ -21,8 +21,8 @@ public interface AccountDAO {
     /**
      * Register a new account
      * 
-     * @param account
-     * @return new account, if successfully registered, null otherwise
+     * @param account (Username and password only!)
+     * @return new account with account_id, if successfully registered, null otherwise
      */
     Account addAccount(Account account);
 
