@@ -134,14 +134,46 @@ public class MessageDAOImpl implements MessageDAO {
 
     @Override
     public Message updateMessage(Message message) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateMessage'");
+        int messageID = message.getMessage_id();
+        // int postedBy = message.getPosted_by();
+        String messageText = message.getMessage_text();
+        // long timePostedEpoch = message.getTime_posted_epoch();
+
+        try {
+            conn = ConnectionUtil.getConnection();
+            String sql = "UPDATE message SET message_text = ? WHERE message_id = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, messageText);
+            ps.setInt(2, messageID);
+
+            if (ps.executeUpdate() != 0) {
+                return message;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return null;
     }
 
     @Override
     public boolean deleteMessage(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteMessage'");
+        try {
+            conn = ConnectionUtil.getConnection();
+            String sql = "DELETE FROM message WHERE message_id = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+
+            if (ps.executeUpdate() != 0) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return false;
     }
 
     private void closeResources() {
