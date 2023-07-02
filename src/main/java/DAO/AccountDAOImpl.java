@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-// import java.util.Comparator;
 import java.util.List;
 
 import Model.Account;
@@ -13,8 +12,8 @@ import Util.ConnectionUtil;
 
 public class AccountDAOImpl implements AccountDAO {
 
-    private Connection conn = null;
-    private PreparedStatement ps = null;
+    private Connection conn;
+    private PreparedStatement ps;
 
     @Override
     public List<Account> getAccounts() {
@@ -90,8 +89,6 @@ public class AccountDAOImpl implements AccountDAO {
                     account.setAccount_id(accountID);
                     return account;
                 }
-                /*List<Account> accounts = getAccounts();
-                return accounts.stream().max(Comparator.comparingInt(Account::getAccount_id)).get();*/
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -105,14 +102,6 @@ public class AccountDAOImpl implements AccountDAO {
         try {
             if (ps != null) {
                 ps.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            if (conn != null) {
-                conn.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();

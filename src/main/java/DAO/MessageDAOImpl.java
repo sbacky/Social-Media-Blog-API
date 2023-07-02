@@ -12,8 +12,8 @@ import Util.ConnectionUtil;
 
 public class MessageDAOImpl implements MessageDAO {
 
-    private Connection conn = null;
-    private PreparedStatement ps = null;
+    private Connection conn;
+    private PreparedStatement ps;
 
     @Override
     public List<Message> getMessages() {
@@ -133,11 +133,9 @@ public class MessageDAOImpl implements MessageDAO {
     }
 
     @Override
-    public Message updateMessage(Message message) {
+    public boolean updateMessage(Message message) {
         int messageID = message.getMessage_id();
-        // int postedBy = message.getPosted_by();
         String messageText = message.getMessage_text();
-        // long timePostedEpoch = message.getTime_posted_epoch();
 
         try {
             conn = ConnectionUtil.getConnection();
@@ -147,14 +145,14 @@ public class MessageDAOImpl implements MessageDAO {
             ps.setInt(2, messageID);
 
             if (ps.executeUpdate() != 0) {
-                return message;
+                return true;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             closeResources();
         }
-        return null;
+        return false;
     }
 
     @Override
@@ -180,14 +178,6 @@ public class MessageDAOImpl implements MessageDAO {
         try {
             if (ps != null) {
                 ps.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            if (conn != null) {
-                conn.close();
             }
         } catch (SQLException e) {
             e.printStackTrace();

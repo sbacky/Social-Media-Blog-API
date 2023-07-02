@@ -38,7 +38,7 @@ public interface MessageDAO {
      * @param message
      * @return updated message, null if update failed
      */
-    Message updateMessage(Message message);
+    boolean updateMessage(Message message);
 
     /**
      * Delete message at ID

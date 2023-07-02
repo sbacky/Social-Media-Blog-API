@@ -97,10 +97,14 @@ public class MessageService {
             return null;
         }
         // Check if messageText is blank or longer than 254 characters
-        if (messageText.isBlank() || messageText.length() > 254) {
+        if (messageText.isEmpty() || messageText.length() > 254) {
             return null;
         }
-        return messageDAO.updateMessage(message);
+        if (messageDAO.updateMessage(message)) {
+            return messageDAO.getMessageByID(messageID);
+        } else {
+            return null;
+        }
     }
 
     /**

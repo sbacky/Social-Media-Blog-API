@@ -144,7 +144,11 @@ public class SocialMediaController {
     private void getMessageByIDHandler(Context ctx) {
         int messageID = Integer.parseInt(ctx.pathParam("message_id"));
         Message message = messageService.getMessageByID(messageID);
-        ctx.json(message);
+        if (message != null) {
+            ctx.json(message);
+        } else {
+            ctx.status(200);
+        }
     }
 
     /**
@@ -190,8 +194,10 @@ public class SocialMediaController {
      * @throws JsonProcessingException
      */
     private void patchMessageHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
         int messageID = Integer.parseInt(ctx.pathParam("message_id"));
-        String messageText = ctx.body();
+        Message tmpMessage = mapper.readValue(ctx.body(), Message.class);
+        String messageText = tmpMessage.getMessage_text();
 
         Message message = new Message();
         message.setMessage_id(messageID);
@@ -199,7 +205,6 @@ public class SocialMediaController {
 
         Message updatedMessage = messageService.updateMessage(message);
         if (updatedMessage != null) {
-            ObjectMapper mapper = new ObjectMapper();
             ctx.json(mapper.writeValueAsString(updatedMessage));
         } else {
             ctx.status(400);
@@ -220,8 +225,12 @@ public class SocialMediaController {
     private void deleteMessageHandler(Context ctx) throws JsonProcessingException {
         int messageID = Integer.parseInt(ctx.pathParam("message_id"));
         Message deletedMessage = messageService.deleteMessage(messageID);
-        ObjectMapper mapper = new ObjectMapper();
-        ctx.json(mapper.writeValueAsString(deletedMessage));
+        if (deletedMessage != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            ctx.json(mapper.writeValueAsString(deletedMessage));
+        } else {
+            ctx.status(200);
+        }
     }
 
 }
