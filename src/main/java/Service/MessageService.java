@@ -108,12 +108,18 @@ public class MessageService {
      * @param messageID
      * @return true if message at messageID is deleted, false otherwise.
      */
-    public boolean deleteMessage(int messageID) {
+    public Message deleteMessage(int messageID) {
+        Message checkMessage = messageDAO.getMessageByID(messageID);
         // Check if messageID refers to an existing message
-        if (messageDAO.getMessageByID(messageID) == null) {
-            return false;
+        if (checkMessage == null) {
+            return null;
         }
-        return messageDAO.deleteMessage(messageID);
+        boolean checkDeletedMessage = messageDAO.deleteMessage(messageID);
+        if (checkDeletedMessage) {
+            return checkMessage;
+        } else {
+            return null;
+        }
     }
 
 }
