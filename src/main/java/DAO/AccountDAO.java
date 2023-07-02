@@ -26,8 +26,4 @@ public interface AccountDAO {
      */
     Account addAccount(Account account);
 
-    // Account updateAccount(Account account);
-
-    // boolean deleteAccount(int id);
-
 }
