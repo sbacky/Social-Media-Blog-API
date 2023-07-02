@@ -62,7 +62,7 @@ public class AccountService {
         Optional<Account> checkAccount = accountDAO.getAccounts().stream()
                                 .filter(a -> Objects.equals(a.getUsername(), username))
                                 .reduce((a, b) -> {throw new IllegalStateException();});
-        // Creat and return account with account_id if username and password are valid, null otherwise
+        // Create and return account with account_id if username and password are valid, null otherwise
         if (checkAccount.isEmpty()) {
             return accountDAO.addAccount(account);
         } else {
