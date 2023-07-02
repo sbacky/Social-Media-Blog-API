@@ -1,5 +1,15 @@
 package Controller;
 
+import java.util.List;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import Model.Account;
+import Model.Message;
+import Service.AccountService;
+import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
@@ -9,6 +19,15 @@ import io.javalin.http.Context;
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 public class SocialMediaController {
+
+    AccountService accountService;
+    MessageService messageService;
+
+    public SocialMediaController() {
+        this.accountService = new AccountService();
+        this.messageService = new MessageService();
+    }
+
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
@@ -48,9 +67,18 @@ public class SocialMediaController {
      * If the login is not successful, the response status should be 401.
      * (Unauthorized)
      * @param ctx
+     * @throws JsonProcessingException
+     * @throws JsonMappingException
      */
-    private void loginAccountHandler(Context ctx) {
-        // TODO: Implement services and return correct response format and status code 
+    private void loginAccountHandler(Context ctx) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Account account = mapper.readValue(ctx.body(), Account.class);
+        Account loggedInAccount = accountService.loginAccount(account);
+        if (loggedInAccount != null) {
+            ctx.json(mapper.writeValueAsString(loggedInAccount));
+        } else {
+            ctx.status(401);
+        }
     }
 
     /**
@@ -64,9 +92,18 @@ public class SocialMediaController {
      * If the registration unsuccessful, response status should be 400.
      * (Client error)
      * @param ctx
+     * @throws JsonProcessingException
+     * @throws JsonMappingException
      */
-    private void postAccountHandler(Context ctx) {
-        // TODO: Implement services and return correct response format and status code
+    private void postAccountHandler(Context ctx) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Account account = mapper.readValue(ctx.body(), Account.class);
+        Account addedAccount = accountService.createAccount(account);
+        if (addedAccount != null) {
+            ctx.json(mapper.writeValueAsString(addedAccount));
+        } else {
+            ctx.status(400);
+        }
     }
 
     // Message Handlers
@@ -79,7 +116,8 @@ public class SocialMediaController {
      * @param ctx
      */
     private void getAllMessagesHandler(Context ctx) {
-        // TODO: Implement services and return correct response format and status code
+        List<Message> messages = messageService.getAllMessages();
+        ctx.json(messages);
     }
 
     /**
@@ -91,7 +129,9 @@ public class SocialMediaController {
      * @param ctx
      */
     private void getMessagesForUserHandler(Context ctx) {
-        // TODO: Implement services and return correct response format and status code
+        int accountID = Integer.parseInt(ctx.pathParam("account_id"));
+        List<Message> messages = messageService.getMessagesForUser(accountID);
+        ctx.json(messages);
     }
 
     /**
@@ -102,7 +142,9 @@ public class SocialMediaController {
      * @param ctx
      */
     private void getMessageByIDHandler(Context ctx) {
-        // TODO: Implement services and return correct response format and status code
+        int messageID = Integer.parseInt(ctx.pathParam("message_id"));
+        Message message = messageService.getMessageByID(messageID);
+        ctx.json(message);
     }
 
     /**
@@ -117,9 +159,18 @@ public class SocialMediaController {
      * If the creation of the message unsuccessful, response status
      * should be 400. (Client error)
      * @param ctx
+     * @throws JsonProcessingException
+     * @throws JsonMappingException
      */
-    private void postMessageHandler(Context ctx) {
-        // TODO: Implement services and return correct response format and status code
+    private void postMessageHandler(Context ctx) throws JsonMappingException, JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(ctx.body(), Message.class);
+        Message addedMessage = messageService.createMessage(message);
+        if (addedMessage != null) {
+            ctx.json(mapper.writeValueAsString(addedMessage));
+        } else {
+            ctx.status(400);
+        }
     }
 
     /**
@@ -136,9 +187,23 @@ public class SocialMediaController {
      * If update message unsuccessful for any reason, response status
      * should be 400. (Client error)
      * @param ctx
+     * @throws JsonProcessingException
      */
-    private void patchMessageHandler(Context ctx) {
-        // TODO: Implement services and return correct response format and status code
+    private void patchMessageHandler(Context ctx) throws JsonProcessingException {
+        int messageID = Integer.parseInt(ctx.pathParam("message_id"));
+        String messageText = ctx.body();
+
+        Message message = new Message();
+        message.setMessage_id(messageID);
+        message.setMessage_text(messageText);
+
+        Message updatedMessage = messageService.updateMessage(message);
+        if (updatedMessage != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            ctx.json(mapper.writeValueAsString(updatedMessage));
+        } else {
+            ctx.status(400);
+        }
     }
 
     /**
@@ -150,9 +215,13 @@ public class SocialMediaController {
      * idempotent, ie, multiple calls to the DELETE endpoint should
      * respond with same type of response.
      * @param ctx
+     * @throws JsonProcessingException
      */
-    private void deleteMessageHandler(Context ctx) {
-        // TODO: Implement services and return correct response format and status code
+    private void deleteMessageHandler(Context ctx) throws JsonProcessingException {
+        int messageID = Integer.parseInt(ctx.pathParam("message_id"));
+        Message deletedMessage = messageService.deleteMessage(messageID);
+        ObjectMapper mapper = new ObjectMapper();
+        ctx.json(mapper.writeValueAsString(deletedMessage));
     }
 
 }
