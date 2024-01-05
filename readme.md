@@ -98,10 +98,16 @@ Users should be able to submit a GET request on the endpoint GET localhost:8080/
 
 ## Setup
 
+Setup this application in eclipse or your favorite Java IDE. Run Main.java to test the application backend. You can also run the test suite in test/java to test each feature.
+
 ## Usage
+
+The application will function as a micro-blogging or messaging app. In the application, any user should be able to see all of the messages posted to the site, or they can see the messages posted by a particular user. The backend will be able to deliver the data needed to display this information as well as process actions like logins, registrations, message creations, message updates, and message deletions.
 
 ## Contributors
 
 Neil Crum
 
 ## License
+
+TBD
