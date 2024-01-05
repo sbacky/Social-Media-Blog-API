@@ -10,7 +10,7 @@ This project is the backend for a social media app, where we manage our users’
 * [Features](#Features)
 * [Technologies](#Technologies)
 * [Setup](#Setup)
-* [Usage](#Usage
+* [Usage](#Usage)
 * [Contributors](#Contributors)
 * [License](#License)
 
